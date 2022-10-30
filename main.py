@@ -41,11 +41,19 @@ ask = input("Введите имя издателя или его айди: \n")
 try:
     ask = int(ask)
     subq = session.query(Publisher).filter(Publisher.id == ask).subquery()
+    print("\nВсе книги издателя:")
     for element in session.query(Book).join(subq, Book.id_publisher == subq.c.id).all():
         print(element)
+    print("\nМагазины, где продается издатель: ")
+    for element in session.query(Shop).join(Stock).join(Book).join(Publisher).join(subq).all():
+        print(element.name)
 except ValueError:
     subq = session.query(Publisher).filter(Publisher.name == ask).subquery()
+    print("\nВсе книги издателя:")
     for element in session.query(Book).join(subq, Book.id_publisher == subq.c.id).all():
         print(element)
+    print("\nМагазины, где продается издатель: ")
+    for element in session.query(Shop).join(Stock).join(Book).join(Publisher).join(subq).all():
+        print(element.name)
 
 session.close()
